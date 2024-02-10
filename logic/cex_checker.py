@@ -110,7 +110,6 @@ class CeXChecker():
         }
 
         url = 'https://lnnfeewzva-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(4.13.1)%3B%20Browser%20(lite)%3B%20instantsearch.js%20(4.41.1)%3B%20Vue%20(2.6.14)%3B%20Vue%20InstantSearch%20(4.3.3)%3B%20JS%20Helper%20(3.8.2)&x-algolia-api-key=07aa231df2da5ac18bd9b1385546e963&x-algolia-application-id=LNNFEEWZVA'
-        results = []
         
         payload = {
             'requests': [
@@ -128,19 +127,18 @@ class CeXChecker():
                 response_json = json.loads(response.text)
                 result = response_json['results'][0]['hits']
 
-                results += result
+                return result
             else:
                 # Raise an exception for non-200 status codes
                 response.raise_for_status()
         
         except Exception as e:
             print(f'Error occured at search():\n{e}')
-    
-        return results
-    
+        
     def sort_results(self, results):
 
         results_sorted = []
+        correct_condition, other_conditions = [], []
 
         print(f'Hits: {len(results)}')
         for result in results:

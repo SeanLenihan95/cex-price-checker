@@ -1,6 +1,6 @@
 # GENERAL
 HEIGHT = 900
-WIDTH = 875
+WIDTH = 925
 APP_NAME = "CeX Price Checker"
 DEFAULT_PADDING = 20
 
@@ -12,30 +12,30 @@ TAG_STYLES = '10 bold'
 
 CONDITION_BASED_CATEGORIES = {
     'Games': {
-        'Nintendo 64': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint')),
-        'SNES': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint')),
-        'PlayStation 1': (('Boxed', 'Boxed'), ('Mint', 'Mint')),
+        'Nintendo 64': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')),
+        'SNES': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')),
+        'PlayStation 1': (('Boxed', 'Boxed'), ('Mint', 'Mint'), ('None', 'None')),
     },
     'Consoles': {
-        'Nintendo 3DS': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo 64': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo DS': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo GameCube': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo Switch': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo Wii': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Nintendo Wii U':(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PlayStation 1': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PlayStation 2': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PlayStation 3': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PlayStation 4': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PlayStation 5': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PS Vita': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'PSP': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'SNES': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Xbox': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Xbox 360': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Xbox One': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
-        'Xbox Series X': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')),
+        'Nintendo 3DS': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo 64': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo DS': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo GameCube': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo Switch': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo Wii': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Nintendo Wii U':(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PlayStation 1': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PlayStation 2': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PlayStation 3': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PlayStation 4': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PlayStation 5': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PS Vita': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'PSP': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'SNES': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Xbox': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Xbox 360': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Xbox One': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+        'Xbox Series X': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
     }
 }
 

@@ -35,7 +35,7 @@ class App(ttk.Window):
             midsection.pack(padx=DEFAULT_PADDING, fill='x', pady=10)
             
             self.condition = RadioButtonMenu(master=midsection, label_text='Preferred Condition:', default_value='Boxed',
-                             button_templates=(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted')))
+                             button_templates=(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')))
 
             # self.condition = Dropdown(master=midsection, label_text='Condition:      ', options=['A', 'B', 'C'])
 
@@ -81,7 +81,7 @@ class App(ttk.Window):
     def search(self):
         title = self.title.get()
         category, subcategory = self.categories.get()
-        condition = self.condition.get()
+        condition = None if self.condition.get() == 'None' else self.condition.get()
 
         self.results_box.search(args=[title, category, subcategory, condition])
         self.results_box.display_result(0)
@@ -270,7 +270,7 @@ class RadioButtonMenu(tk.Frame):
     def create_button(self, button_template):
         text, value = button_template
         radio_button = tk.Radiobutton(master=self, text=text, value=value, variable=self.option)
-        radio_button.pack(side='left', padx=3)
+        radio_button.pack(side='left', padx=2)
         self.buttons.append(radio_button)
 
     def disable_buttons(self):
@@ -287,7 +287,7 @@ class RadioButtonMenu(tk.Frame):
         for button_template in button_templates:
             self.create_button(button_template)
 
-        self.pack(padx=15 if len(self.buttons) <= 2 else 0)
+        self.pack()
 
 class ResultsBox(tk.Frame):
     def __init__(self, master, checker):
