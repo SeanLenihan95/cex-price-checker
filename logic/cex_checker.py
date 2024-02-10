@@ -136,8 +136,22 @@ class CeXChecker():
             print(f'Error occured at search():\n{e}')
         
     def sort_results(self, results):
-
-        results_sorted = []
+        def condition_mismatch(title, condition):
+            # condition not specified
+            if not condition:
+                return False
+            
+            # last word of item title is not a condition keyword
+            condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
+            if title.split(' ')[-1] not in condition_keywords:
+                return False
+            
+            # conditions match
+            if condition == title.split(' ')[-1]:
+                return False
+            
+            return True
+        
         correct_condition, other_conditions = [], []
 
         print(f'Hits: {len(results)}')
@@ -159,17 +173,12 @@ class CeXChecker():
             similarity_score = get_similarity_score(title, self.title)
             
             # wrong condition
-            WRONG_CONDITION_PENALTY = 0.25
-            condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
-            if self.condition and title.split(' ')[-1] in condition_keywords:
-                condition = title.split(' ')[-1]
-                if condition != self.condition:
-                    similarity_score *= WRONG_CONDITION_PENALTY
-            
-            results_sorted.append((result, similarity_score))
-        
-        results_sorted.sort(key=lambda x: x[1], reverse=True)
-        return results_sorted
+            if condition_mismatch(title, self.condition):
+                other_conditions.append((result, similarity_score))
+            else:
+                correct_condition.append((result, similarity_score))
+                    
+        return sorted(correct_condition, key=lambda x: x[1], reverse=True) + sorted(other_conditions, key=lambda x: x[1], reverse=True)
 
     def get_game_details(self, result_and_similarity_score):
         result, similarity_score = result_and_similarity_score

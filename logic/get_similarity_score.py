@@ -43,9 +43,10 @@ def get_similarity_score(a: str, b: str):
         # capitalise and strip leading whitespace
         string = string.upper().strip()
 
-        # replace '2K' with '20' and hyphens with spaces
+        # replace '2K' with '20', hyphens with spaces, and 'Ed.' with 'Edition'
         string = string.replace('2K', '20')
         string = string.replace('-', ' ')
+        string = string.replace('ED.', 'EDITION')
 
         # remove all non-alphanumeric characters
         string = re.sub(r'[^a-zA-Z0-9 ]', '', string)
@@ -82,5 +83,5 @@ def get_similarity_score(a: str, b: str):
     
     return SequenceMatcher(None, a, b).ratio()
 
-# print(get_similarity_score('Edition God Of War (2018) No DLC', 
-#                            'God of War Edition'))
+# print(get_similarity_score('Spyro: Year of the Dragon, Platinum Ed., Boxed', 
+#                            'Crash'))
