@@ -56,6 +56,12 @@ class CeXChecker():
                 'Blu-Rays': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
                 'DVD Players': ('DVD-RW Drives', 'Portable DVD Players'),
                 'Blu-Ray Players': ('Blu-Ray Players', 'Blu-Ray Drives'),
+            },
+            'Figures': {
+                'Amiibo': ('NFC Figures',),
+                'Disney Infinity': ('NFC Figures',),
+                'LEGO Dimensions': ('NFC Figures',),
+                'Skylanders': ('NFC Figures',),
             }
         }
         self.supported_categories = {key: list(self.categories[key].keys()) for key in self.categories.keys()}
@@ -68,18 +74,18 @@ class CeXChecker():
         self.title = title
         self.condition = condition
 
-        results = self.make_request(title, category, subcategory, condition)
+        results = self.make_request(title, category, subcategory)
         if not results:
             return
 
         results_sorted = self.sort_results(results)
-        if not results_sorted:
-            return
         
         return [self.get_game_details(result_and_similarity_score) for result_and_similarity_score in results_sorted]
     
-    def make_request(self, title, category, subcategory, condition):        
+    def make_request(self, title, category, subcategory):        
         search_space = self.categories[category][subcategory]
+        include_subcategory_in_title = {'4K', 'Skylanders', 'Amiibo', 'Disney Infinity', 'LEGO Dimensions'}
+        search_term = f'{title} {subcategory}' if subcategory in include_subcategory_in_title else title
         
         header = {
             'Accept': '*/*',
@@ -110,7 +116,7 @@ class CeXChecker():
             'requests': [
                 {
                     'indexName': 'prod_cex_ie',
-                    'query': title,
+                    'query': search_term,
                     'facetFilters': [[f'categoryFriendlyName:{category}' for category in search_space]]
                 }
             ]
