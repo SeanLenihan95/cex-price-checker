@@ -10,13 +10,13 @@ from logic.cex_checker import *
 class App(ttk.Window):
     def __init__(self):
         def initial_setup():
-            self.columnconfigure(0, weight=3)
+            self.columnconfigure(0, weight=1)
             self.columnconfigure(1, weight=1)
             self.rowconfigure(0, weight=0)
             self.rowconfigure(1, weight=1)
 
             heading = tk.Label(master=self, text=APP_NAME, font=f'{FONT} {H1_STYLES}')
-            heading.grid(column=0, row=0, columnspan=2, sticky='new', ipady=DEFAULT_PADDING / 2)
+            heading.grid(column=0, row=0, columnspan=2, sticky='new', pady=(DEFAULT_PADDING, 0))
 
             self.column_a = tk.Frame(master=self)
             self.column_b = tk.Frame(master=self)
@@ -25,38 +25,36 @@ class App(ttk.Window):
             self.column_b.grid(column=1, row=1, sticky='news')
 
         def fill_column_a():
-            self.title = Entry(master=self.column_a, label_text='Title:   ')
+            self.title = Entry(master=self.column_a)
             
             self.categories = LinkedCascadingComboboxes(master=self.column_a, 
                                                         data=self.checker.get_supported_categories(),
                                                         event_to_bind=self.on_category_input)
 
             midsection = tk.Frame(master=self.column_a)
-            midsection.pack(padx=DEFAULT_PADDING, fill='x', pady=10)
+            midsection.pack(padx=DEFAULT_PADDING, fill='x', pady=(DEFAULT_PADDING, 0))
             
             self.condition = RadioButtonMenu(master=midsection, label_text='Preferred Condition:', default_value='Boxed',
-                             button_templates=(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')))
+                             button_templates=(('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')))
 
-            # self.condition = Dropdown(master=midsection, label_text='Condition:      ', options=['A', 'B', 'C'])
-
-            search_button_container = tk.Frame(master=midsection)
-            search_button_container.pack(expand=True, anchor='e')
-            self.search_button = tk.Button(master=search_button_container, text='SEARCH', width=15, command=self.search, state=tk.DISABLED)
-            self.search_button.pack()
+            self.search_button = tk.Button(master=midsection, text='SEARCH', command=self.search, state=tk.DISABLED)
+            self.search_button.pack(fill='x', expand=True, anchor='e', padx=(30, 0), ipady=2)
             
-            self.results_box = ResultsBox(master=self.column_a, checker=self.checker)
+            self.results_box = ResultsBox(master=self.column_a)
             
         def fill_column_b():
             self.scrolllist_heading = tk.Label(master=self.column_b, text='Total (0 Items)', font=f'{FONT} {H2_STYLES}')
-            self.scrolllist_heading.pack(fill='x', pady=0)
+            self.scrolllist_heading.pack(fill='x', padx=(0, DEFAULT_PADDING))
 
             self.scroll_list = ScrollList(master=self.column_b)
 
             button_section = tk.Frame(master=self.column_b)
-            button_section.pack(fill='x', padx=DEFAULT_PADDING, pady=0)
+            button_section.pack(fill='x', pady=(DEFAULT_PADDING, 0), padx=(0, DEFAULT_PADDING))
             
-            tk.Button(master=button_section, text='Add to Total', width=20, command=self.add_to_scrolllist).pack(side='left')
-            tk.Button(master=button_section, text='Clear All', width=20, command=self.scroll_list.clear_all_items).pack(side='right')
+            left_button = tk.Button(master=button_section, text='Add to Total', width=20, command=self.add_to_scrolllist)
+            left_button.pack(padx=(0,7), side='left', anchor='w', fill='x', expand=True)
+            right_button = tk.Button(master=button_section, text='Clear All', width=20, command=self.scroll_list.clear_all_items)
+            right_button.pack(padx=(7,0), side='right', anchor='e', fill='x', expand=True)
 
             self.total_box = TotalBox(master=self.column_b)
             
@@ -73,7 +71,7 @@ class App(ttk.Window):
         
         # resizing variables/bindings
         self.debounce_timer = None
-        self.bind('<Configure>', self.on_resize)
+        # self.bind('<Configure>', self.on_resize)
         
     def run(self):
         self.mainloop()
@@ -83,7 +81,7 @@ class App(ttk.Window):
         category, subcategory = self.categories.get()
         condition = None if self.condition.get() == 'None' else self.condition.get()
 
-        self.results_box.search(args=[title, category, subcategory, condition])
+        self.results_box.results = self.checker.search(title, category, subcategory, condition)
         self.results_box.display_result(0)
 
     def add_to_scrolllist(self):
@@ -169,35 +167,37 @@ class App(ttk.Window):
         self.debounce_timer = self.after(200, adjust_label_wraplengths)
 
 class Entry(tk.Frame):
-    def __init__(self, master, label_text):
+    class CustomEntry(tk.Entry):
+        def __init__(self, master, placeholder_text):
+            super().__init__(master=master)
+            self.placeholder_text = placeholder_text
+
+            self.bind('<FocusIn>', self.on_click)
+            self.bind('<FocusOut>', self.on_focus_out)
+
+            self.insert(0, self.placeholder_text)
+            # self.config(fg='grey')
+
+        def on_click(self, event):
+            if self.get() == self.placeholder_text:
+                self.delete(0, tk.END)
+                # self.config(fg='white')
+
+        def on_focus_out(self, event):
+            if self.get() == '':
+                self.insert(0, self.placeholder_text)
+                # self.config(fg='grey')
+
+    def __init__(self, master):
         super().__init__(master=master)
-        self.pack(padx=DEFAULT_PADDING, pady=DEFAULT_PADDING / 2, fill='both')
+        self.pack(padx=DEFAULT_PADDING, pady=(DEFAULT_PADDING, 0), fill='both')
 
-        tk.Label(master=self, text=label_text, font=f'{FONT} {TAG_STYLES}').pack(side='left')
-
-        self.entry = tk.Entry(master=self)
+        self.entry = Entry.CustomEntry(master=self, placeholder_text='Type search term here ...')
         self.entry.pack(side='right', expand=True, fill='x')
 
     def get(self):
         return self.entry.get()
     
-class Dropdown(tk.Frame):
-    def __init__(self, master, label_text, options):
-        super().__init__(master=master)
-        self.pack(side='left')
-
-        tk.Label(master=self, text=label_text, font=f'{FONT} {TAG_STYLES}').pack(side='left')
-
-        style = ttk.Style()
-        style.configure('TCombobox', 
-                        padding=(5, 2, 20, 2))
-
-        self.dropdown_menu = ttk.Combobox(master=self, values=options)
-        self.dropdown_menu.pack(side='right', expand=True, fill='x')
-
-    def get(self):
-        return self.dropdown_menu.get()
-
 class LinkedCascadingComboboxes(tk.Frame):
     class CascadingCombobox(ttk.Combobox):
         def __init__(self, master, values, side, default_text, event_to_bind):
@@ -205,7 +205,11 @@ class LinkedCascadingComboboxes(tk.Frame):
             self.default_text = default_text
 
             super().__init__(master=master, textvariable=self.var, values=values)
-            self.pack(padx=5, side=side, anchor='w' if side == 'left' else 'e', fill='x', expand=True)
+            self.pack(padx=(0,7) if side == 'left' else (7,0), 
+                      side=side, 
+                      anchor='w' if side == 'left' else 'e', 
+                      fill='x', 
+                      expand=True)
             
             self.set(default_text)
             self.bind('<KeyRelease>', event_to_bind)
@@ -213,10 +217,10 @@ class LinkedCascadingComboboxes(tk.Frame):
 
         def get(self):
             return self.var.get()
-
+        
     def __init__(self, master, data, event_to_bind):
         super().__init__(master=master)
-        self.pack(padx=DEFAULT_PADDING, pady=DEFAULT_PADDING // 1.5, fill='x')
+        self.pack(padx=DEFAULT_PADDING, pady=(DEFAULT_PADDING, 0), fill='x')
 
         self.data = data
 
@@ -290,7 +294,7 @@ class RadioButtonMenu(tk.Frame):
         self.pack()
 
 class ResultsBox(tk.Frame):
-    def __init__(self, master, checker):
+    def __init__(self, master):
         def initialise_top_half():
             os.chdir('C:/Users/seanl/OneDrive/Desktop/projects/cex-only-checker/v_1')
             RELATIVE_PATH = 'images/'
@@ -350,12 +354,11 @@ class ResultsBox(tk.Frame):
         
         super().__init__(master=master, bd=1, relief="sunken")
 
-        self.checker = checker
         self.results = []
         self.current_result_index = 0
 
         self.heading = tk.Label(master=self, text='CeX Results', font=f'{FONT} {H2_STYLES}')
-        self.heading.pack(fill='both', pady=DEFAULT_PADDING / 2)
+        self.heading.pack(fill='both', pady=DEFAULT_PADDING // 1.5)
 
         initialise_top_half()
         initialise_bottom_half()
@@ -393,8 +396,28 @@ class ResultsBox(tk.Frame):
         self.result_number_label.config(text=f'Result {index + 1} of {len(self.results)}')
 
         # update results
-        content = self.checker.prettify_results(result)
+        content = self.prettify_results(result)
         self.fill(content=content, column='right')
+
+    def prettify_results(self, results):
+        pretty_results = []
+        hidden_results = ['image', 'ean']
+        pretty_results.append(f"{results['title']} ({round(results['sim_score'] * 100)}% match)")
+        
+        for key, value in list(results.items())[2:]:
+            if key in hidden_results:
+                continue
+
+            if 'price' in key and value != 'N/A':
+                pretty_results.append(format_currency(value))
+            elif value is True:
+                pretty_results.append('Yes')
+            elif value is False:
+                pretty_results.append('No')
+            else:
+                pretty_results.append(str(value))
+        
+        return pretty_results
 
     def preprocess_image(self, image):
         ratio = RESULTS_IMAGE_MAX_HEIGHT / image.height
@@ -430,12 +453,12 @@ class ResultsBox(tk.Frame):
 class ScrollList(tk.Frame):
     def __init__(self, master):
         super().__init__(master=master, bd=1, relief="sunken")
-        self.pack(fill='both', expand=True, pady=DEFAULT_PADDING)
+        self.pack(fill='both', expand=True, pady=(DEFAULT_PADDING // 1.5, 0), padx=(0, DEFAULT_PADDING))
 
         self.items = []
         self.images = []
 
-        self.scrollbar = tk.Scrollbar(self, orient="vertical", width=17)
+        self.scrollbar = tk.Scrollbar(self, orient="vertical", width=SCROLLBAR_WIDTH)
         self.scrollbar.pack(side="right", fill="y")
 
         self.canvas = tk.Canvas(self, width=105, yscrollcommand=self.scrollbar.set, bd=1, relief="sunken")
@@ -500,7 +523,7 @@ class ScrollListItem(tk.Frame):
 
         # Initialise caption container
         self.caption_container = tk.Frame(master=self)
-        self.caption_container.pack(side='left', padx=20, fill='x', expand=True)
+        self.caption_container.pack(side='left', padx=(20, SCROLLBAR_WIDTH + 8), fill='x', expand=True)
 
         # Populate caption container
         tags = ['Title:', 'Cash:', 'Voucher:', 'Buy Price:']
@@ -509,7 +532,7 @@ class ScrollListItem(tk.Frame):
             
         content = [title, format_currency(cash), format_currency(voucher), format_currency(buy)]
         for i, element in enumerate(content):
-            tk.Label(master=self.caption_container, text=element, wraplength=ITEM_WRAPLENGTH, justify='left').grid(column=1, row=i, sticky='w', padx=15)            
+            tk.Label(master=self.caption_container, text=element, wraplength=ITEM_WRAPLENGTH, justify='left').grid(column=1, row=i, sticky='w', padx=(15, 0))            
 
         # Initialise delete button
         self.delete_button = None
@@ -531,7 +554,7 @@ class ScrollListItem(tk.Frame):
 
     def show_delete_button(self, event):
         self.delete_button = tk.Button(master=self, text='X', width=4, command=self.delete)
-        self.delete_button.place(x=self.winfo_width()-20, rely=0.0, anchor='ne')
+        self.delete_button.place(x=self.winfo_width()-40, rely=0.0, anchor='ne')
 
     def hide_delete_button(self, event):
         if self.delete_button:
@@ -540,7 +563,7 @@ class ScrollListItem(tk.Frame):
 class TotalBox(tk.Frame):
     def __init__(self, master):
         super().__init__(master=master)
-        self.pack(padx=DEFAULT_PADDING, pady=DEFAULT_PADDING, fill='both')
+        self.pack(pady=DEFAULT_PADDING, fill='both')
 
         self.total_cash = tk.Label(master=self, text='€0.00')
         self.total_voucher = tk.Label(master=self, text='€0.00')

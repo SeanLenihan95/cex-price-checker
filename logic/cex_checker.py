@@ -54,6 +54,7 @@ class CeXChecker():
             'DVD & Blu-Ray': {
                 'DVDs': ('DVD Movies €1', 'Feature Films', 'DVD Anime', 'DVD Music €1', 'DVD Sport €1', 'DVD TV & Documentary', 'DVD World Cinema', 'DVD World Cinema €1', 'DVD Adult', 'DVD Music', 'DVD Sport', 'DVD TV €1'),
                 'Blu-Rays': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
+                '4K': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
                 'DVD Players': ('DVD-RW Drives', 'Portable DVD Players'),
                 'Blu-Ray Players': ('Blu-Ray Players', 'Blu-Ray Drives'),
             },
@@ -77,15 +78,17 @@ class CeXChecker():
         results = self.make_request(title, category, subcategory)
         if not results:
             return
+        
+        # self.print_results(results)
 
         results_sorted = self.sort_results(results)
         
-        return [self.get_game_details(result_and_similarity_score) for result_and_similarity_score in results_sorted]
+        return [self.extract_game_details(result_and_score) for result_and_score in results_sorted]
     
     def make_request(self, title, category, subcategory):        
         search_space = self.categories[category][subcategory]
-        include_subcategory_in_title = {'4K', 'Skylanders', 'Amiibo', 'Disney Infinity', 'LEGO Dimensions'}
-        search_term = f'{title} {subcategory}' if subcategory in include_subcategory_in_title else title
+        include_subcategory_in_search = {'4K', 'Skylanders', 'Amiibo', 'Disney Infinity', 'LEGO Dimensions'}
+        search_term = f'{title} {subcategory}' if subcategory in include_subcategory_in_search else title
         
         header = {
             'Accept': '*/*',
@@ -136,53 +139,25 @@ class CeXChecker():
             print(f'Error occured at search():\n{e}')
         
     def sort_results(self, results):
-        def condition_mismatch(title, condition):
-            # condition not specified
-            if not condition:
-                return False
-            
-            # last word of item title is not a condition keyword
-            condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
-            if title.split(' ')[-1] not in condition_keywords:
-                return False
-            
-            # conditions match
-            if condition == title.split(' ')[-1]:
-                return False
-            
-            return True
-        
-        correct_condition, other_conditions = [], []
-
-        print(f'Hits: {len(results)}')
-        for result in results:
-            print(f'Name: {result["boxName"]}')
-            print(f'Platform: {prettify_platform(result["categoryFriendlyName"])}')
-            print(f'Discontinued: {bool(result["discontinued"])}')
-            print(f'Available: {bool(result["availability"])}')
-            print()
-
-        for result in results:
-            
-            # discontinued
-            discontinued = result['discontinued']
-            if discontinued:
-                continue
-
+        def custom_sort(result_and_score):
+            result, similarity_score = result_and_score
             title = result['boxName']
-            similarity_score = get_similarity_score(title, self.title)
-            
-            # wrong condition
-            if condition_mismatch(title, self.condition):
-                other_conditions.append((result, similarity_score))
-            else:
-                correct_condition.append((result, similarity_score))
-                    
-        return sorted(correct_condition, key=lambda x: x[1], reverse=True) + sorted(other_conditions, key=lambda x: x[1], reverse=True)
 
-    def get_game_details(self, result_and_similarity_score):
-        result, similarity_score = result_and_similarity_score
-        
+            if self.condition:
+                condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
+            
+                if title.split(' ')[-1] in condition_keywords and self.condition != title.split(' ')[-1]:
+                    return (0, similarity_score)
+            
+            return (1, similarity_score)
+
+        results_and_scores = [(result, get_similarity_score(result['boxName'], self.title)) for result in results if not result['discontinued']]
+    
+        return sorted(results_and_scores, key=custom_sort, reverse=True)
+
+    def extract_game_details(self, result_and_score):
+        result, similarity_score = result_and_score
+
         title = result['boxName']
         sell_price_cash = result['cashPriceCalculated']
         sell_price_voucher = result['exchangePriceCalculated']
@@ -205,29 +180,18 @@ class CeXChecker():
             'is_in_stock': is_in_stock,
             'url': 'https://ie.webuy.com/product-detail?id=' + ean,
         }
-
-    def prettify_results(self, results:dict):
-        pretty_results = []
-        hidden_results = ['image', 'ean']
-        pretty_results.append(f"{results['title']} ({round(results['sim_score'] * 100)}% match)")
-        
-        for key, value in list(results.items())[2:]:
-            if key in hidden_results:
-                continue
-
-            if 'price' in key and value != 'N/A':
-                pretty_results.append(format_currency(value))
-            elif value is True:
-                pretty_results.append('Yes')
-            elif value is False:
-                pretty_results.append('No')
-            else:
-                pretty_results.append(str(value))
-        
-        return pretty_results
     
     def get_supported_categories(self):
         return self.supported_categories
+    
+    def print_results(self, results):
+        print(f'Hits: {len(results)}')
+        for result in results:
+            print(f'Name: {result["boxName"]}')
+            print(f'Platform: {prettify_platform(result["categoryFriendlyName"])}')
+            print(f'Discontinued: {bool(result["discontinued"])}')
+            print(f'Available: {bool(result["availability"])}')
+            print()
     
 # cpc = CeXChecker()
 # results = cpc.search(title='God of War', 
