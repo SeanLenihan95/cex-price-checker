@@ -12,6 +12,7 @@ TAG_STYLES = '10 bold'
 
 CONDITION_BASED_CATEGORIES = {
     'Games': {
+        'Gameboy Advance': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')),
         'Nintendo 64': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')),
         'SNES': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Mint', 'Mint'), ('None', 'None')),
         'PlayStation 1': (('Boxed', 'Boxed'), ('Mint', 'Mint'), ('None', 'None')),

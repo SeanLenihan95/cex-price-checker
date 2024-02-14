@@ -9,6 +9,7 @@ class CeXChecker():
     def __init__(self):
         self.categories = {
             'Games': {
+                'Gameboy Advance': ('Gameboy Advance Software',),
                 'Nintendo 3DS': ('3DS Games',), 
                 'Nintendo 64': ('Nintendo 64 Software',),
                 'Nintendo DS': ('Nintendo DS Games',),
@@ -31,6 +32,7 @@ class CeXChecker():
                 'Xbox Series X': ('Xbox Series Games', 'Xbox Smart Delivery Games',),
             },
             'Consoles': {
+                'Gameboy Advance': ('Gameboy Advance Console',),
                 'Nintendo 3DS': ('3DS Consoles',),
                 'Nintendo 64': ('Nintendo 64 Consoles',),
                 'Nintendo DS': ('Nintendo DS Consoles',),
@@ -43,9 +45,9 @@ class CeXChecker():
                 'PlayStation 3': ('Playstation3 Consoles',),
                 'PlayStation 4': ('Playstation4 Consoles',),
                 'PlayStation 5': ('Playstation5 Consoles',),
-                'PS Vita': ('PS Vita Games', 'PS Vita Consoles',),
-                'PSP': ('PSP Games', 'PSP UMD Movies', 'PSP Consoles',),
-                'SNES': ('Super NES Software', 'Super NES Consoles',),
+                'PS Vita': ('PS Vita Consoles',),
+                'PSP': ('PSP Consoles',),
+                'SNES': ('Super NES Consoles',),
                 'Xbox': ('Xbox Consoles',),
                 'Xbox 360': ('Xbox 360 Consoles',),
                 'Xbox One': ('Xbox One Consoles',),
@@ -83,7 +85,7 @@ class CeXChecker():
 
         results_sorted = self.sort_results(results)
         
-        return [self.extract_game_details(result_and_score) for result_and_score in results_sorted]
+        return [self.extract_details(result) for result in results_sorted]
     
     def make_request(self, title, category, subcategory):        
         search_space = self.categories[category][subcategory]
@@ -136,12 +138,12 @@ class CeXChecker():
                 response.raise_for_status()
         
         except Exception as e:
-            print(f'Error occured at search():\n{e}')
+            print(f'Error occured at make_request():\n{e}')
         
     def sort_results(self, results):
-        def custom_sort(result_and_score):
-            result, similarity_score = result_and_score
+        def custom_sort(result):
             title = result['boxName']
+            similarity_score = result['similarity_score']
 
             if self.condition:
                 condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
@@ -151,34 +153,28 @@ class CeXChecker():
             
             return (1, similarity_score)
 
-        results_and_scores = [(result, get_similarity_score(result['boxName'], self.title)) for result in results if not result['discontinued']]
-    
-        return sorted(results_and_scores, key=custom_sort, reverse=True)
-
-    def extract_game_details(self, result_and_score):
-        result, similarity_score = result_and_score
-
-        title = result['boxName']
-        sell_price_cash = result['cashPriceCalculated']
-        sell_price_voucher = result['exchangePriceCalculated']
-        buy_price = result['sellPrice']
-        ean = result['boxId']
-        image = result['imageUrls']['large'].replace(' ', '%20')
-        is_in_stock = bool(result['availability'])
+        # remove all discontinued results
+        results = [result for result in results if not result['discontinued']]
         
-        platform = prettify_platform(result['categoryFriendlyName'])
+        # add similarity score to result
+        for result in results:
+            similarity_score = get_similarity_score(result['boxName'], self.title)
+            result['similarity_score'] = similarity_score
 
+        return sorted(results, key=custom_sort, reverse=True)
+
+    def extract_details(self, result):
         return {
-            'title': title,
-            'sim_score': similarity_score,
-            'platform': platform,
-            'sell_price_cash': sell_price_cash,
-            'sell_price_voucher': sell_price_voucher,
-            'buy_price': buy_price,
-            'ean': ean,
-            'image': image,
-            'is_in_stock': is_in_stock,
-            'url': 'https://ie.webuy.com/product-detail?id=' + ean,
+            'title': result['boxName'],
+            'sim_score': result['similarity_score'],
+            'platform': prettify_platform(result['categoryFriendlyName']),
+            'sell_price_cash': result['cashPriceCalculated'],
+            'sell_price_voucher': result['exchangePriceCalculated'],
+            'buy_price': result['sellPrice'],
+            'ean': result['boxId'],
+            'image': result['imageUrls']['large'].replace(' ', '%20'),
+            'is_in_stock': bool(result['availability']),
+            'url': 'https://ie.webuy.com/product-detail?id=' + result['boxId'],
         }
     
     def get_supported_categories(self):
@@ -192,21 +188,3 @@ class CeXChecker():
             print(f'Discontinued: {bool(result["discontinued"])}')
             print(f'Available: {bool(result["availability"])}')
             print()
-    
-# cpc = CeXChecker()
-# results = cpc.search(title='God of War', 
-#                      platform=prettify_platform('PS4'), 
-#                      condition='Boxed')
-
-# if not results:
-#     print('NO RESULT FOUND')
-# else:
-#     for result in results:
-#         print(f'RESULT {results.index(result) + 1} OF {len(results)}')
-#         print(f'Title: {result["title"]}')
-#         print(f'Platform: {result["platform"]}')
-#         print(f'Sell Price (Cash): {result["sell_price_cash"]}')
-#         print(f'Sell Price (Voucher): {result["sell_price_voucher"]}')
-#         print(f'Buy Price: {result["buy_price"]}')
-#         print(f'Similarity Score: {round(100 * result["sim_score"], 2)}%')
-#         print(f'Image URL: {result["image"]}\n')
