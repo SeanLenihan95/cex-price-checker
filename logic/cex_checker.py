@@ -101,8 +101,10 @@ class CeXChecker():
                 'Mobile Broadband': ('Mobile Broadband',),
                 'Accessories': ('Apple iPhone Accessories', 'CeX basics - Phone Accessories', 'Phone Accessories',),
                 'Other': ('Phones - Unlocked',),
-                # '': ('',),
-                # '': ('',),
+            },
+            'Laptops & Computers': {
+                'Data Storage': ('Solid State Hard Drives (SSD)', 'USB Flash Drives', 'USB External Hard Drives', 'SATA Hard Drives', 'IDE Hard Drives', '2.5 Inch Laptop Hard Drives', 'Network Attached Hard Drives'),
+                'Desktops': ('Desktops - Apple Mac', 'Desktops - Windows', 'Desktops - Other OS')
             }
         }
     
@@ -118,7 +120,7 @@ class CeXChecker():
         if not results:
             return
         
-        # self.print_results(results)
+        self.print_results(results)
 
         sorted_results = self.sort_results(results)
         
@@ -162,7 +164,9 @@ class CeXChecker():
             if self.condition:
                 condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
             
-                if title.split(' ')[-1] in condition_keywords and self.condition != title.split(' ')[-1]:
+                condition = next(keyword for keyword in (title.split(' ')[-1], title.split('/')[-1]) if keyword in condition_keywords)
+                
+                if condition and condition != self.condition:
                     return (0, similarity_score)
             
             return (1, similarity_score)

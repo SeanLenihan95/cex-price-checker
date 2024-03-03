@@ -40,7 +40,17 @@ CONDITION_BASED_CATEGORIES = {
     },
     'Phones': {
         'Android': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'iPhone': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Windows': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Vodafone': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Meteor': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        '3': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'eMobile': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Tesco': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
         'Other': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+    },
+    'Laptops & Computers': {
+        'Desktops':(('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None'))
     }
 }
 
