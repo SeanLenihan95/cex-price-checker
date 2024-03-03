@@ -49,10 +49,11 @@ class App(ttk.Window):
             self.scroll_list = ScrollList(master=self.column_b)
 
             button_section = tk.Frame(master=self.column_b)
-            button_section.pack(fill='x', pady=(DEFAULT_PADDING, 0), padx=(0, DEFAULT_PADDING))
+            button_section.pack(fill='x', pady=(DEFAULT_PADDING * 1.25, DEFAULT_PADDING), padx=(0, DEFAULT_PADDING))
             
             left_button = tk.Button(master=button_section, text='Add to Total', width=20, command=self.add_to_scrolllist)
             left_button.pack(padx=(0,7), side='left', anchor='w', fill='x', expand=True)
+            
             right_button = tk.Button(master=button_section, text='Clear All', width=20, command=self.scroll_list.clear_all_items)
             right_button.pack(padx=(7,0), side='right', anchor='e', fill='x', expand=True)
 
@@ -71,7 +72,7 @@ class App(ttk.Window):
         
         # resizing variables/bindings
         self.debounce_timer = None
-        # self.bind('<Configure>', self.on_resize)
+        self.bind('<Configure>', self.on_resize)
         
     def run(self):
         self.mainloop()
@@ -146,6 +147,9 @@ class App(ttk.Window):
         def adjust_label_wraplengths():        
             current_width = self.winfo_width()
             ratio = current_width / WIDTH
+            # print(f'ratio: {ratio}')
+            # print(f'current_width: {current_width}')
+            # print(f'new wraplength: {ITEM_WRAPLENGTH * ratio}')
 
             results_box_labels = self.results_box.results_container.grid_slaves()
             for label in results_box_labels:
@@ -155,6 +159,9 @@ class App(ttk.Window):
                     label.config(wraplength=CONTENT_WRAPLENGTH * ratio)
 
             for item in self.scroll_list.items:
+                canvas_width = self.scroll_list.canvas.winfo_width()
+                ratio = canvas_width / SCROLL_LIST_WIDTH
+                
                 item_labels = [widget for widget in item.caption_container.winfo_children() if isinstance(widget, tk.Label)]
                 for label in item_labels:
                     label.config(wraplength=ITEM_WRAPLENGTH * ratio)
@@ -274,7 +281,7 @@ class RadioButtonMenu(tk.Frame):
     def create_button(self, button_template):
         text, value = button_template
         radio_button = tk.Radiobutton(master=self, text=text, value=value, variable=self.option)
-        radio_button.pack(side='left', padx=2)
+        radio_button.pack(side='left', padx=(0, 3))
         self.buttons.append(radio_button)
 
     def disable_buttons(self):
@@ -371,13 +378,10 @@ class ResultsBox(tk.Frame):
 
     def display_result(self, index):
         if not self.results:
-            if self.current_image == self.default_image: # do nothing if no searches have been made
-                return
-            else:
-                self.fill(content=['-'] * self.number_of_results_rows, column='right')
-                self.display_image(self.no_results_image)
-                self.result_number_label.config(text='Result 0 of 0')
-                return
+            self.fill(content=['-'] * self.number_of_results_rows, column='right')
+            self.display_image(self.no_results_image)
+            self.result_number_label.config(text='Result 0 of 0')
+            return
         
         # get result
         index = index % len(self.results)
@@ -401,11 +405,10 @@ class ResultsBox(tk.Frame):
 
     def prettify_results(self, results):
         pretty_results = []
-        hidden_results = ['image', 'ean']
         pretty_results.append(f"{results['title']} ({round(results['sim_score'] * 100)}% match)")
         
         for key, value in list(results.items())[2:]:
-            if key in hidden_results:
+            if key in ['image', 'ean']:
                 continue
 
             if 'price' in key and value != 'N/A':
@@ -563,7 +566,7 @@ class ScrollListItem(tk.Frame):
 class TotalBox(tk.Frame):
     def __init__(self, master):
         super().__init__(master=master)
-        self.pack(pady=DEFAULT_PADDING, fill='both')
+        self.pack(pady=(0, DEFAULT_PADDING), fill='both')
 
         self.total_cash = tk.Label(master=self, text='€0.00')
         self.total_voucher = tk.Label(master=self, text='€0.00')
@@ -576,10 +579,10 @@ class TotalBox(tk.Frame):
             self.rowconfigure(i, weight=1)
 
         for i, tag in enumerate(['Total Sell Price (Cash):', 'Total Sell Price (Voucher):', 'Total Buy Price:']):
-            tk.Label(master=self, text=tag, font=f'{FONT} {TAG_STYLES}').grid(column=0, row=i, sticky='w', pady=2)
+            tk.Label(master=self, text=tag, font=f'{FONT} {TAG_STYLES}').grid(column=0, row=i, sticky='ws', pady=(0, 2))
 
         for i, attribute in enumerate([self.total_cash, self.total_voucher, self.total_buy]):
-            attribute.grid(column=1, row=i, sticky='w', pady=2)
+            attribute.grid(column=1, row=i, sticky='ws', pady=(0, 2))
 
     def set_voucher(self, text):
         self.total_voucher.config(text=format_currency(text))

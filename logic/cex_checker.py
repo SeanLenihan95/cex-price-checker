@@ -53,6 +53,28 @@ class CeXChecker():
                 'Xbox One': ('Xbox One Consoles',),
                 'Xbox Series X': ('Xbox Series Consoles',)
             },
+            'Accessories': {
+                'Gameboy Advance': ('Gameboy Advance Accessories',),
+                'Nintendo 3DS': ('3DS Accessories',),
+                'Nintendo 64': ('Nintendo 64 Accessories',),
+                'Nintendo DS': ('Nintendo DS Accessories',),
+                'Nintendo GameCube': ('GameCube Accessories',),
+                'Nintendo Switch': ('Switch Accessories',),
+                'Nintendo Wii': ('Wii Accessories',),
+                'Nintendo Wii U': ('Wii U Accessories',),
+                'PlayStation 1': ('Playstation1 Accessories',),
+                'PlayStation 2': ('Playstation2 Accessories',),
+                'PlayStation 3': ('Playstation3 Accessories',),
+                'PlayStation 4': ('Playstation4 Accessories',),
+                'PlayStation 5': ('Playstation5 Accessories',),
+                'PS Vita': ('PS Vita Accessories',),
+                'PSP': ('PSP Accessories',),
+                'SNES': ('Super NES Accessories',),
+                'Xbox': ('Xbox Accessories',),
+                'Xbox 360': ('Xbox 360 Accessories',),
+                'Xbox One': ('Xbox One Accessories',),
+                'Xbox Series X': ('Xbox Series Accessories',)
+            },
             'DVD & Blu-Ray': {
                 'DVDs': ('DVD Movies €1', 'Feature Films', 'DVD Anime', 'DVD Music €1', 'DVD Sport €1', 'DVD TV & Documentary', 'DVD World Cinema', 'DVD World Cinema €1', 'DVD Adult', 'DVD Music', 'DVD Sport', 'DVD TV €1'),
                 'Blu-Rays': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
@@ -65,9 +87,24 @@ class CeXChecker():
                 'Disney Infinity': ('NFC Figures',),
                 'LEGO Dimensions': ('NFC Figures',),
                 'Skylanders': ('NFC Figures',),
+            },
+            'Phones': {
+                'Android': ('Phones Android',),
+                'iPhones': ('Phones - iPhones',),
+                'Windows': ('Phones Windows Phone',),
+                'Vodafone': ('Phones - Vodafone',),
+                'Meteor': ('Phones - Meteor',),
+                '3': ('Phones - 3',),
+                'eMobile': ('Phones - eMobile',),
+                'Tesco': ('Phones - Tesco',),
+                'Non-Working': ('Phones iPhone Non Working', 'Non-working Phones'),
+                'Mobile Broadband': ('Mobile Broadband',),
+                'Accessories': ('Apple iPhone Accessories', 'CeX basics - Phone Accessories', 'Phone Accessories',),
+                'Other': ('Phones - Unlocked',),
+                # '': ('',),
+                # '': ('',),
             }
         }
-        self.supported_categories = {key: list(self.categories[key].keys()) for key in self.categories.keys()}
     
     @lru_cache(maxsize=None)
     def search(self, title:str, category:str, subcategory:str, condition:str):
@@ -83,37 +120,14 @@ class CeXChecker():
         
         # self.print_results(results)
 
-        results_sorted = self.sort_results(results)
+        sorted_results = self.sort_results(results)
         
-        return [self.extract_details(result) for result in results_sorted]
+        return [self.extract_details(result) for result in sorted_results]
     
     def make_request(self, title, category, subcategory):        
         search_space = self.categories[category][subcategory]
-        include_subcategory_in_search = {'4K', 'Skylanders', 'Amiibo', 'Disney Infinity', 'LEGO Dimensions'}
-        search_term = f'{title} {subcategory}' if subcategory in include_subcategory_in_search else title
+        search_term = f'{title} {subcategory}' if subcategory in {'4K', 'Skylanders', 'Amiibo', 'Disney Infinity', 'LEGO Dimensions'} else title
         
-        header = {
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            'Content-Length': '896',
-            'DNT': '1',
-            'Host': 'lnnfeewzva-dsn.algolia.net',
-            'Origin': 'https://ie.webuy.com',
-            'Pragma': 'no-cache',
-            'Referer': 'https://ie.webuy.com/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'cross-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-            'content-type': 'application/x-www-form-urlencoded',
-            'sec-ch-ua': 'Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': "Windows"
-        }
-
         url = 'https://lnnfeewzva-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(4.13.1)%3B%20Browser%20(lite)%3B%20instantsearch.js%20(4.41.1)%3B%20Vue%20(2.6.14)%3B%20Vue%20InstantSearch%20(4.3.3)%3B%20JS%20Helper%20(3.8.2)&x-algolia-api-key=07aa231df2da5ac18bd9b1385546e963&x-algolia-application-id=LNNFEEWZVA'
         
         payload = {
@@ -125,7 +139,7 @@ class CeXChecker():
                 }
             ]
         }
-        response = requests.post(url=url, headers=header, data=json.dumps(payload))
+        response = requests.post(url=url, data=json.dumps(payload))
 
         try:
             if response.status_code == 200:
@@ -178,7 +192,7 @@ class CeXChecker():
         }
     
     def get_supported_categories(self):
-        return self.supported_categories
+        return {key: list(self.categories[key].keys()) for key in self.categories.keys()}
     
     def print_results(self, results):
         print(f'Hits: {len(results)}')

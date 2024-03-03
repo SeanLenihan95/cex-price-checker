@@ -37,6 +37,10 @@ CONDITION_BASED_CATEGORIES = {
         'Xbox 360': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
         'Xbox One': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
         'Xbox Series X': (('Boxed', 'Boxed'), ('Unboxed', 'Unboxed'), ('Discounted', 'Discounted'), ('None', 'None')),
+    },
+    'Phones': {
+        'Android': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Other': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
     }
 }
 
@@ -49,7 +53,7 @@ RESULTS_IMAGE_MAX_HEIGHT = 175
 RESULTS_IMAGE_MAX_WIDTH = 340
 DEFAULT_CEX_CONTENT = {
     "Game Title:" : "-",
-    "Platform:" : "-",
+    "Category:" : "-",
     "Sell Price (Cash):" : "-",
     "Sell Price (Voucher):" : "-",
     "Buy Price:" : "-",
@@ -62,4 +66,4 @@ SCROLL_LIST_WIDTH = 360
 SCROLLBAR_WIDTH = 17
 ITEM_IMAGE_MAX_HEIGHT = 125
 ITEM_IMAGE_MAX_WIDTH = 100
-ITEM_WRAPLENGTH = 160
+ITEM_WRAPLENGTH = 144
