@@ -102,9 +102,18 @@ class CeXChecker():
                 'Accessories': ('Apple iPhone Accessories', 'CeX basics - Phone Accessories', 'Phone Accessories',),
                 'Other': ('Phones - Unlocked',),
             },
-            'Laptops & Computers': {
+            'Computing': {
                 'Data Storage': ('Solid State Hard Drives (SSD)', 'USB Flash Drives', 'USB External Hard Drives', 'SATA Hard Drives', 'IDE Hard Drives', '2.5 Inch Laptop Hard Drives', 'Network Attached Hard Drives'),
-                'Desktops': ('Desktops - Apple Mac', 'Desktops - Windows', 'Desktops - Other OS')
+                'Desktops': ('Desktops - Apple Mac', 'Desktops - Windows', 'Desktops - Other OS'),
+                'Graphics, Sound & Capture Cards': ('Capture Cards', 'TV Tuner Cards & Adaptors', 'PCI-Express Graphics Cards'),
+                'Handheld Gaming PCs': ('Handheld Gaming PCs',),
+                'Internal Memory': ('DDR2 - Desktop 240 Pin', 'DDR3 - Desktop 240 Pin', 'DDR2 - Laptop 200 Pin', 'DDR3 - Laptop 204 Pin', 'Memory - Desktop DDR4', 'Memory - Laptop DDR4', 'DDR5 - Laptop 262 Pin', 'DDR5 - Desktop 288pin'),
+                'Laptops': ('Laptops - Apple Mac', 'Laptops - Windows', 'Laptops - Other OS'),
+                'Networking': ('Wireless Cards & Adaptors', 'Wireless Routers'),
+                'Peripherals': ('PC Accessories', 'PC Speakers', 'PC Mice', 'PC Keyboards', 'PC Headsets', 'PC Gaming Controllers'),
+                'Processors': ('AMD Processors', 'Intel Processors'),
+                'Software': ('Apple Software', 'Microsoft Software'),
+                'Tablets': ('Apple iPad', 'Tablets - Blackberry', 'Tablet Accessories', 'Tablets - Android', 'Tablets - Windows')
             }
         }
     
@@ -164,12 +173,12 @@ class CeXChecker():
             if self.condition:
                 condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
             
-                condition = next(keyword for keyword in (title.split(' ')[-1], title.split('/')[-1]) if keyword in condition_keywords)
+                condition = next((keyword for keyword in (title.split(' ')[-1], title.split('/')[-1]) if keyword in condition_keywords), None)
                 
-                if condition and condition != self.condition:
-                    return (0, similarity_score)
+                if condition and condition == self.condition:
+                    return (1, similarity_score)
             
-            return (1, similarity_score)
+            return (0, similarity_score)
 
         # remove all discontinued results
         results = [result for result in results if not result['discontinued']]

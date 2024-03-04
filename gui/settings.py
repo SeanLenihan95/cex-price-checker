@@ -49,8 +49,14 @@ CONDITION_BASED_CATEGORIES = {
         'Tesco': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
         'Other': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
     },
-    'Laptops & Computers': {
-        'Desktops':(('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None'))
+    'Computing': {
+        'Desktops': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Graphics, Sound & Capture Cards': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Handheld Gaming PCs': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Laptops': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Networking': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Peripherals': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Tablets': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
     }
 }
 
