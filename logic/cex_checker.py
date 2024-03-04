@@ -114,6 +114,11 @@ class CeXChecker():
                 'Processors': ('AMD Processors', 'Intel Processors'),
                 'Software': ('Apple Software', 'Microsoft Software'),
                 'Tablets': ('Apple iPad', 'Tablets - Blackberry', 'Tablet Accessories', 'Tablets - Android', 'Tablets - Windows')
+            },
+            'Electronics': {
+                'Wearables': ('Wearables - Activity Trackers', 'Wearables - Smartwatches', 'Wearables - Hybrid Smartwatches'),
+                'Smart Technology': ('Smart Lighting', 'Smart Security', 'Smart Home Monitoring', 'Smart Assistant', 'Smart Accessories'),
+                'Miscellaneous': ('E-Book Readers', 'Home Automation', 'Robots', 'Robot Vacuum', 'Baby Monitor', 'Health Monitors')
             }
         }
     

@@ -57,6 +57,11 @@ CONDITION_BASED_CATEGORIES = {
         'Networking': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
         'Peripherals': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
         'Tablets': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+    },
+    'Electronics': {
+        'Wearables': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Smart Technology': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Miscellaneous': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
     }
 }
 
