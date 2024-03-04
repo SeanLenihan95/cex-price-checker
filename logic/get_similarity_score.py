@@ -2,6 +2,7 @@ from difflib import SequenceMatcher
 import re
 from word2number import w2n
 import roman
+from utils.helpers import *
 
 YEAR_THRESHOLD = 1900
 NUMBER_MISMATCH_PENALTY = 0.25
@@ -20,17 +21,6 @@ def get_similarity_score(a: str, b: str):
             return str(roman.fromRoman(word))
         except:
             return word
-        
-    def remove_words_in_brackets(a_str:str):
-        pattern = re.compile(r'\([^)]*\)')
-        
-        # remove any words in brackets
-        result = re.sub(pattern, '', a_str)
-        
-        # remove any double spaces
-        result = re.sub(r'\s+', ' ', result)
-        
-        return result
         
     def preprocess_string(string:str):
         # remove forbidden words

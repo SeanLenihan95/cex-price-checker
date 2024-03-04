@@ -2,6 +2,7 @@ import PIL
 import requests
 from io import BytesIO
 from functools import lru_cache
+import re
 
 ### IMAGE HELPERS ###
     
@@ -95,3 +96,17 @@ def format_currency(amount):
     amount = max(round(float(amount), 2), 0)
     amount = '{:.2f}'.format(amount)
     return '€' + amount
+
+def remove_words_in_brackets(a_str:str):
+    pattern = re.compile(r'\([^)]*\)')
+    
+    # remove any words in brackets
+    result = re.sub(pattern, '', a_str)
+    
+    # remove any double spaces
+    result = re.sub(r'\s+', ' ', result)
+
+    # remove any leading whitespace
+    result = result.strip()
+    
+    return result

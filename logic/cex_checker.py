@@ -172,7 +172,7 @@ class CeXChecker():
         
     def sort_results(self, results):
         def custom_sort(result):
-            title = result['boxName']
+            title = remove_words_in_brackets(result['boxName'])
             similarity_score = result['similarity_score']
 
             if self.condition:
