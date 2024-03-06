@@ -61,7 +61,16 @@ CONDITION_BASED_CATEGORIES = {
     'Electronics': {
         'Wearables': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
         'Smart Technology': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
-        'Miscellaneous': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Health & Beauty': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Robots and Automation': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'eBook Readers': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Media Devices': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'TVs, Monitors & Projectors': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Cameras & Photography': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Accessories': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Headphones & Earphones': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'DAB & Internet Radios': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
+        'Sat Nav & GPS Units': (('A', 'A'), ('B', 'B'), ('C', 'C'), ('None', 'None')),
     }
 }
 

@@ -79,8 +79,8 @@ class CeXChecker():
                 'DVDs': ('DVD Movies €1', 'Feature Films', 'DVD Anime', 'DVD Music €1', 'DVD Sport €1', 'DVD TV & Documentary', 'DVD World Cinema', 'DVD World Cinema €1', 'DVD Adult', 'DVD Music', 'DVD Sport', 'DVD TV €1'),
                 'Blu-Rays': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
                 '4K': ('Blu-Ray Movies', 'Blu-Ray TV & Documentary', 'Blu-Ray World Cinema', 'Blu-Ray Music', 'Blu-Ray Sports'),
-                'DVD Players': ('DVD-RW Drives', 'Portable DVD Players'),
-                'Blu-Ray Players': ('Blu-Ray Players', 'Blu-Ray Drives'),
+                'DVD / Blu-Ray Players': ('Blu-Ray Players', 'Portable DVD Players'),
+                'DVD / Blu-Ray Drives': ('DVD-RW Drives', 'Blu-Ray Drives'),
             },
             'Figures': {
                 'Amiibo': ('NFC Figures',),
@@ -116,9 +116,22 @@ class CeXChecker():
                 'Tablets': ('Apple iPad', 'Tablets - Blackberry', 'Tablet Accessories', 'Tablets - Android', 'Tablets - Windows')
             },
             'Electronics': {
-                'Wearables': ('Wearables - Activity Trackers', 'Wearables - Smartwatches', 'Wearables - Hybrid Smartwatches'),
-                'Smart Technology': ('Smart Lighting', 'Smart Security', 'Smart Home Monitoring', 'Smart Assistant', 'Smart Accessories'),
-                'Miscellaneous': ('E-Book Readers', 'Home Automation', 'Robots', 'Robot Vacuum', 'Baby Monitor', 'Health Monitors')
+                'Wearables': ('Wearables - Activity Trackers', 'Wearables - Smartwatches', 'Wearables - Hybrid Smartwatches', 'Apple Watch', 'Apple Watch Accessories', 'VR Tech', 'Wearables Accessories', 'Health Monitors'),
+                'Smart Technology': ('Smart Lighting', 'Smart Security', 'Smart Home Monitoring', 'Smart Assistant', 'Smart Accessories', 'Wearables - Hybrid Smartwatches', 'Wearables - Smartwatches'),
+                'Health & Beauty': ('Hair Tech', 'Hair Tech Accessories', 'Health Monitors', 'Baby Monitor'),
+                'Robots and Automation': ('Home Automation', 'Robots', 'Robot Vacuum'),
+                'eBook Readers': ('E-Book Readers',),
+                'Media Devices': ('TV Media Players', 'Soundbars', 'Apple iPod', 'Media Players'),
+                'Memory Cards': ('Compact Flash (CF) Cards', 'Memory Stick', 'Memory Stick Duo', 'Memory Stick Micro (M2)', 'Secure Digital Micro (SD)', 'Secure Digital (SD)'),
+                'TVs, Monitors & Projectors': ('LCD Televisions', 'LCD Monitors', 'LED Televisions', 'Projectors'),
+                'Cameras & Photography': ('Digital Photo Frames', 'Compact Cameras', 'Digital SLR Cameras', 'Camcorders', 'Camera Accessories', 'Camera Lenses', 'Cameras - Compact System'),
+                'DAB & Internet Radios': ('DAB & Internet Radios',),
+                'Headphones & Earphones': ('Headphones & Earphones', 'Apple AirPods, EarPods & Headphones'),
+                'Sat Nav & GPS Units': ('Sat Nav & GPS',),
+                'Accessories': ('Media Player Accessories', 'HDMI Cables & Misc', 'Camera Accessories', 'CeX basics - Cables', 'Wearables Accessories', 'Smart Accessories', 'Hair Tech Accessories')
+            }, 
+            'Miscellaneous': {
+                'CeX Basics': ('CeX basics - Phone Accessories', 'CeX basics - Gaming Accessories', 'CeX basics - Cables', 'CeX basics - Power',)
             }
         }
     
@@ -176,9 +189,11 @@ class CeXChecker():
             similarity_score = result['similarity_score']
 
             if self.condition:
-                condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
-            
-                condition = next((keyword for keyword in (title.split(' ')[-1], title.split('/')[-1]) if keyword in condition_keywords), None)
+                if 'Grade' in result:
+                    condition = result['Grade'][0]
+                else:
+                    condition_keywords = ('Mint', 'Boxed', 'Unboxed', 'Discounted', 'A', 'B', 'C')
+                    condition = next((keyword for keyword in (title.split(' ')[-1], title.split('/')[-1]) if keyword in condition_keywords), None)
                 
                 if condition and condition == self.condition:
                     return (1, similarity_score)
@@ -219,4 +234,6 @@ class CeXChecker():
             print(f'Platform: {prettify_platform(result["categoryFriendlyName"])}')
             print(f'Discontinued: {bool(result["discontinued"])}')
             print(f'Available: {bool(result["availability"])}')
+            if 'Grade' in result:
+                print(f'Grade: {result["Grade"][0]}')
             print()
